@@ -66,11 +66,27 @@ class Game(object):
                 Player(self, popn(self.deck, 3), popn(self.deck, 3), popn(self.deck, 3))
             )
         self.pile: Cards = []
+        # NOTE: not necessary, but for sanity checking at the end of the game
+        self.discard: Cards = []
         # index into self.players
         self.whose_turn = 0
 
     def get_pile(self) -> Cards:
         return self.pile
+
+    def get_deck(self) -> Cards:
+        return self.deck
+
+    def draw_from_deck(self, n: int) -> Cards:
+        return popn(self.deck, n)
+
+    def tick(self):
+        # detect whether the game is over
+        # get turn from the current player
+        # detect terminal conditions e.g. 4 of a kind on top of the pile, or a 10 or 3 was played
+        # TODO: handle interrupts where any player can complete a set of 4 and sweep the pile
+        # then, sometimes it's the same player's turn
+        pass
 
 
 # TODO: how to handle the case of 3/7/10?
@@ -87,5 +103,18 @@ class Player(object):
         self.faceup_cards = faceup_cards
         self.hand = hand
 
+    def out_of_cards(self) -> bool:
+        return self.hidden_cards == [] and self.faceup_cards == [] and self.hand == []
+
+    def draw(self) -> None:
+        if self.game.get_deck() == []:
+            return
+        if len(self.hand) >= 3:
+            return
+        self.hand.extend(self.game.draw_from_deck(3 - len(self.hand)))
+
+
     def play_cards(self) -> Optional[Cards]:
+        # i think we want to start with a decent default strategy (strategy-as-code)
+        # eventually we can check for "self.strategy" (strategy-as-data)
         pass
