@@ -15,6 +15,9 @@ def test_valid_play_no_pile():
 def test_valid_play_same_number():
     assert game.valid_play([game.Card(5, 'D')], [game.Card(5, 'H')])
     assert game.valid_play([game.Card(5, 'D')], [game.Card(5, 'H'), game.Card(5, 'S')])
+    assert not game.valid_play(
+        [game.Card(5, 'D')], [game.Card(5, 'H'), game.Card(8, 'S')]
+    )
 
 
 def test_valid_play_higher_number():
